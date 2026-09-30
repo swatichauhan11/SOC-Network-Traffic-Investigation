@@ -1,59 +1,120 @@
-# Incident Timeline
+# Investigation Timeline
 
 ## 1. Baseline Network Activity
 
-A baseline network capture was analyzed to understand normal communication between the Kali machine and the Linux victim machine.
+A baseline packet capture was analyzed to understand normal communication between the Kali analyst machine and the Linux victim machine.
 
-- Kali IP: `192.168.100.10`
-- Linux Victim IP: `192.168.100.20`
-- Capture file: `normal-ping.pcap`
-- Protocol observed: ICMP
+* Kali IP: `192.168.100.10`
+* Linux Victim IP: `192.168.100.20`
+* Capture file: `normal-ping.pcap`
+* Protocol observed: ICMP
 
-The capture contained ICMP Echo Request packets from Kali to the victim and ICMP Echo Reply packets from the victim back to Kali.
+The capture showed normal bidirectional ping communication:
 
-This represented normal ping communication and no intentionally generated suspicious activity was identified in the baseline capture.
+```text
+Kali → Linux Victim: ICMP Echo Request (Type 8)
+Linux Victim → Kali: ICMP Echo Reply (Type 0)
+```
+
+No intentionally suspicious activity was identified during the baseline phase.
 
 ---
 
-## 2. Network Scanning Activity
+## 2. Network Service Discovery
 
-An Nmap scan was performed against the Linux victim machine to identify accessible services.
+Nmap was used to identify network-accessible services on the Linux victim machine.
 
 The scan identified:
 
-- `22/tcp` — SSH
-- `80/tcp` — HTTP
+| Port | Protocol | Service |
+| ---- | -------- | ------- |
+| 22   | TCP      | SSH     |
+| 80   | TCP      | HTTP    |
 
-These open ports were recorded as potential investigation points because network services can provide entry points that should be monitored in a SOC environment.
+The exposed services were recorded as investigation points because network-accessible services can increase the attack surface of a host.
 
 ---
 
 ## 3. TCP Connection Analysis
 
-TCP traffic was examined in Wireshark to understand the connection establishment process.
+The discovered services were examined at the packet level using Wireshark.
 
-A successful TCP three-way handshake was observed:
+A TCP three-way handshake was observed:
 
-1. Kali → Linux Victim: `SYN`
-2. Linux Victim → Kali: `SYN, ACK`
-3. Kali → Linux Victim: `ACK`
+```text
+Kali → Linux Victim: SYN
+Linux Victim → Kali: SYN, ACK
+Kali → Linux Victim: ACK
+```
 
-This confirmed that a TCP connection was successfully established.
+This confirmed successful TCP connection establishment.
 
-TCP reset traffic (`RST/ACK`) was also observed during the investigation and was studied to understand how TCP connections can be terminated or rejected.
+TCP `RST/ACK` packets were also observed during the investigation. These packets were analyzed to understand TCP connection rejection and termination behavior.
 
 ---
 
-## 4. Investigation Summary
+## 4. SSH Authentication Investigation
 
-The investigation progressed from establishing a normal network baseline to identifying exposed services and analyzing TCP communication.
+SSH authentication activity was examined using the Linux victim's authentication logs.
 
-The main observations were:
+Repeated failed authentication attempts were observed, including attempts involving the username `wronguser`.
 
-- Normal ICMP communication was successfully identified.
-- SSH and HTTP services were discovered through Nmap.
-- TCP three-way handshake behavior was analyzed in Wireshark.
-- TCP reset behavior was also observed.
-- Zeek deployment was attempted but deferred due to installation issues.
+Relevant observations included:
 
-These observations form the foundation for further SOC-style network traffic investigation.
+| Time     | Event                             |
+| -------- | --------------------------------- |
+| 13:56:03 | Failed SSH authentication attempt |
+| 13:56:07 | Failed SSH authentication attempt |
+| 14:13:42 | Connection closed by invalid user |
+
+The authentication activity was documented as security-relevant because repeated failed SSH authentication attempts can warrant further investigation in a real SOC environment.
+
+**Assessment:** Suspicious authentication activity was observed, but no system compromise was established from the available evidence.
+
+---
+
+## 5. HTTP Traffic Investigation
+
+HTTP communication was analyzed to understand normal client-server behavior.
+
+The investigation included:
+
+* HTTP GET requests
+* HTTP server responses
+* TCP connections associated with the HTTP service
+* HTTP response codes
+
+The traffic was reviewed to establish expected HTTP behavior and provide a baseline for identifying abnormal requests in future investigations.
+
+---
+
+## 6. Investigation Summary
+
+The investigation progressed through the following workflow:
+
+```text
+Baseline Traffic
+       ↓
+Nmap Service Discovery
+       ↓
+TCP Packet Analysis
+       ↓
+SSH Authentication Review
+       ↓
+HTTP Traffic Analysis
+       ↓
+Security Findings
+```
+
+The investigation identified:
+
+* Normal ICMP communication
+* Exposed SSH and HTTP services
+* TCP three-way handshake behavior
+* TCP reset behavior
+* Repeated failed SSH authentication attempts
+* Normal HTTP client-server communication
+
+No confirmed system compromise or malicious activity was established from the available evidence.
+
+This investigation demonstrates a basic SOC workflow of establishing a network baseline, identifying exposed services, analyzing network traffic, reviewing authentication activity, and documenting security-relevant findings.
