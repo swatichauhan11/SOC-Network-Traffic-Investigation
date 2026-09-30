@@ -11,6 +11,9 @@ The baseline capture showed normal ICMP communication between the Kali analyst m
 
 **Assessment:** Normal network activity.
 
+<img width="512" height="291" alt="image" src="https://github.com/user-attachments/assets/29acb390-01b4-4475-afad-f45f8f7afd66" />
+
+
 ---
 
 ## Finding 2 — Exposed SSH Service
@@ -37,6 +40,9 @@ A web service can be a potential attack surface and should be investigated furth
 
 **Assessment:** Service exposed; requires further investigation.
 
+<img width="582" height="346" alt="image" src="https://github.com/user-attachments/assets/87f9060e-7f0b-4cfe-ab79-3e8b7655b89a" />
+
+
 ---
 
 ## Finding 4 — TCP Connection Behavior
@@ -48,6 +54,9 @@ Wireshark analysis confirmed the TCP three-way handshake:
 TCP reset (`RST/ACK`) traffic was also observed.
 
 **Assessment:** TCP connection establishment and termination behavior successfully identified.
+
+<img width="601" height="342" alt="image" src="https://github.com/user-attachments/assets/a3fb1ab2-c1cc-4dfa-a8a2-60d752c1590e" />
+
 
 ---
 
