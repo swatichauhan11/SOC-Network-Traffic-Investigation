@@ -51,6 +51,9 @@ This confirmed successful TCP connection establishment.
 
 TCP `RST/ACK` packets were also observed during the investigation. These packets were analyzed to understand TCP connection rejection and termination behavior.
 
+<img width="560" height="282" alt="image" src="https://github.com/user-attachments/assets/933daa6f-3b09-4f4a-9def-0c080bdb482d" />
+
+
 ---
 
 ## 4. SSH Authentication Investigation
@@ -71,6 +74,10 @@ The authentication activity was documented as security-relevant because repeated
 
 **Assessment:** Suspicious authentication activity was observed, but no system compromise was established from the available evidence.
 
+
+<img width="535" height="297" alt="image" src="https://github.com/user-attachments/assets/6a200743-c373-48ff-b8fa-d4a8fef50197" />
+
+
 ---
 
 ## 5. HTTP Traffic Investigation
@@ -85,6 +92,9 @@ The investigation included:
 * HTTP response codes
 
 The traffic was reviewed to establish expected HTTP behavior and provide a baseline for identifying abnormal requests in future investigations.
+
+<img width="556" height="295" alt="image" src="https://github.com/user-attachments/assets/1451f953-0da6-4aa5-98cc-0ce3416907e7" />
+
 
 ---
 
